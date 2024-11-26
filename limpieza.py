@@ -19,3 +19,4 @@ print(df.info())
 
 #guardamos los datos limpios
 df.to_csv('Client_segment_limpio.csv', sep=';', index=False)
+#Variables inecesarias: 
