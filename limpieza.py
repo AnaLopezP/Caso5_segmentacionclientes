@@ -33,6 +33,9 @@ for i in df.columns:
 #Campanna_anno num: 0, 3, 1, 0.5, 4
 
 #Cambiamos las variables categoricas a numericas
+#quitamos los 3 primeros caracteres de la columna ID
+df['ID'] = df['ID'].str[3:]
+df['ID'] = df['ID'].astype(int)
 df['Genero'] = df['Genero'].map({'M': 0, 'F': 1})
 df['Casado'] = df['Casado'].map({'Si': 1, 'No': 0, np.nan: 0})
 df['Graduado'] = df['Graduado'].map({'Si': 1, 'No': 0, np.nan: 0})
