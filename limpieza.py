@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 #leemos los datos
-df = pd.read_csv('client_seg_telco/client_seg_telco.csv', sep=';')
+df = pd.read_csv('Client_segment_MODIFICADO.csv', sep=';', encoding='latin1')
 print(df.head())
 
 #Quitamos nan
