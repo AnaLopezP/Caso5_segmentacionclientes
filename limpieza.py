@@ -14,3 +14,8 @@ print(df.isnull().sum())
 
 #miramos los tipos de datos
 print(df.dtypes)
+print(df.describe())
+print(df.info())
+
+#guardamos los datos limpios
+df.to_csv('Client_segment_limpio.csv', sep=';', index=False)
