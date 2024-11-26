@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
+#ignorar warnings
+import warnings
+warnings.filterwarnings('ignore')
 
 #leemos los datos limpios
 df = pd.read_csv('Client_segment_limpio.csv', sep=';', encoding='latin1')
@@ -79,7 +82,7 @@ plt.grid()
 plt.show()
 
 # Entrenar el modelo con el número óptimo de clusters
-optimal_k = None # hay que cambiarlo por el valor óptimo
+optimal_k = 2 # hay que cambiarlo por el valor óptimo
 kmeans = KMeans(n_clusters=optimal_k, random_state=42)
 kmeans.fit(df_scaled)
 
@@ -90,5 +93,16 @@ print(df.head())
 
 cluster_summary = df.groupby('Cluster').mean()
 print(cluster_summary)
+
+# representación gráfica de los clusters
+# Graficar los datos en las dos primeras componentes principales
+plt.scatter(df_pca[:, 0], df_pca[:, 1], c=kmeans.labels_, s=5)
+plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s=100, c='red', label='Centroides')
+plt.title("Datos proyectados en PCA1 y PCA2")
+plt.xlabel("Componente Principal 1")
+plt.ylabel("Componente Principal 2")
+plt.grid()
+plt.legend()
+plt.show()
 
 
