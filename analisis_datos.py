@@ -1,41 +1,79 @@
 import pandas as pd
 import numpy as np
-
-df = pd.read_csv('Client_segment_limpio.csv', sep=';', encoding='latin1')
-
-# Calculamos la media de cada variable y centralizamos
-df_mean = df.mean()
-df_centered = df - df_mean
-print(df_centered.head())
-
-# Calculamos la matriz de covarianza
-cov_matrix = np.cov(df_centered, rowvar=False)
-print(cov_matrix)
-
-# Calculamos los autovalores y autovectores
-eigenvalues, eigenvectors = np.linalg.eig(cov_matrix)
-print(eigenvalues)
-print(eigenvectors)
-
-# Ordenamos los autovalores de mayor a menor
-idx = eigenvalues.argsort()[::-1]
-eigenvalues = eigenvalues[idx]
-eigenvectors = eigenvectors[:, idx]
-
-# Calculamos la matriz de vectores propios
-eigenvectors_matrix = eigenvectors
-print(eigenvectors_matrix)
-
-# Proyectamos los datos en el nuevo espacio
-df_pca = np.dot(df_centered, eigenvectors_matrix)
-print(df_pca)
-
-# Graficamos los datos centrados
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
-plt.scatter(df_pca[:, 0], df_pca[:, 1], c='blue', s=5)
-plt.title("Datos proyectados en PCA1 y PCA2")
-plt.xlabel("Componente Principal 1 (PCA1)")
-plt.ylabel("Componente Principal 2 (PCA2)")
-plt.grid()
-plt.savefig('imagenes/PCA.png')
+import warnings
+from sklearn.decomposition import PCA
+warnings.filterwarnings('ignore')
+
+# 1. Leer los datos
+df = pd.read_csv('Client_segment_limpio.csv', sep=';', encoding='latin1')
+print(df.head())
+
+
+# 2. Escala los datos
+scaler = StandardScaler()
+df_scaled = scaler.fit_transform(df)
+
+# 3. Los convertimos a dataframe
+df_scaled = pd.DataFrame(df_scaled, columns=df.columns)
+
+# 4. Aplicamos PCA
+pca = PCA(n_components=2)
+df_pca_componentes_principales = pca.fit_transform(df_scaled)
+df_pca = pd.DataFrame(df_pca_componentes_principales, columns=['pca1', 'pca2'])
+print(df_pca.head())
+
+# 5. Obtener el porcentaje de varianza explicada
+varianza_explicada = pca.explained_variance_ratio_
+print("-------- VARIANZA EXPLICADA --------")
+print(pca.explained_variance_ratio_)
+for i, var in enumerate(varianza_explicada):
+    print(f'PCA {i+1}: {var*100:.2f}%')
+    
+# 6. Graficar los datos en el espacio PCA
+plt.figure(figsize=(8, 6))
+plt.scatter(df_pca['pca1'], df_pca['pca2'], alpha=.5)
+plt.xlabel('PCA 1')
+plt.ylabel('PCA 2')
+plt.title('Gráfico de dispersión PCA')
+plt.savefig('imagenes/grafico_pca.png')
 plt.show()
+
+# Dibujar los vectores de las variables originales
+cargas = pca.components_.T * np.sqrt(pca.explained_variance_)
+cargas_df = pd.DataFrame(cargas, columns=['pca1', 'pca2'], index=df.columns)
+print("-------- CARGAS --------")
+print(cargas_df)
+plt.figure(figsize=(8, 6))
+plt.scatter(df_pca['pca1'], df_pca['pca2'], alpha=.5)
+for i in cargas_df.index:
+    plt.arrow(0, 0, cargas_df.loc[i, 'pca1'], cargas_df.loc[i, 'pca2'], color='r', alpha=.5, head_width=0.1)
+    plt.text(cargas_df.loc[i, 'pca1']*1.15, cargas_df.loc[i, 'pca2']*1.15, i, color='g')
+    
+plt.xlabel('PCA 1')
+plt.ylabel('PCA 2')
+plt.title('Gráfico de dispersión PCA con vectores de carga')
+plt.savefig('imagenes/grafico_pca_vectores_carga.png')
+plt.show()
+
+# gráfico horizontal de cargas
+plt.figure(figsize=(8, 6))
+plt.barh(df.columns, np.abs(cargas_df['pca1']), alpha=.5)
+plt.xticks(rotation=90)
+plt.ylabel('Carga')
+plt.title('Cargas de las variables en PCA 1')
+plt.savefig('imagenes/grafico_cargas_pca1.png')
+plt.show()
+
+plt.figure(figsize=(8, 6))
+plt.barh(df.columns, np.abs(cargas_df['pca2']), alpha=.5)
+plt.xticks(rotation=90)
+plt.ylabel('Carga')
+plt.title('Cargas de las variables en PCA 2')
+plt.savefig('imagenes/grafico_cargas_pca2.png')
+plt.show()
+
+
+
