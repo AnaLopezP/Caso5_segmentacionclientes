@@ -46,3 +46,7 @@ Cogemos las altas (positivas y negativas). Estas son las variables influyentes:
 PC1: casado, edad, gastoscore, generacion, ingresos anuales brutos, gasto medio
 PC2: dias cliente, campaña año, abandono
 
+### CONLUSI: 
+El PC1 está muy influido por variables relacionadas con las carácterísticas del cliente como persona, lo que sugiere que está relacionado con el perfil socioeconómico de los clientes. 
+Por otra parte, el PC2 es influido por variables que relacionan la situación del cliente con la empresa. 
+
