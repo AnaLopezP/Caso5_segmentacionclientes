@@ -70,7 +70,7 @@ df_scaled['Cluster'] = cluster
 print(df_scaled.head())
 
 #Obtener los índices de las columas Generacion y Campanna_anno
-gen_index = df_scaled.index('Generacion')
+gen_index = df_scaled.index('Generacion') #ERROR AL COGER EL ÍNDICE
 campanna_index = df_scaled.index('Campanna_anno')
 
 centroide = kmeans.cluster_centers_
