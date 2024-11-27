@@ -50,6 +50,8 @@ df['Campanna_anno'] = df['Campanna_anno'].map({np.nan: 0, '3': 3, '1': 1, '0,5':
 print(df.isnull().sum())
 #No hay NaN
 
+
+
 #guardamos los datos limpios
 df.to_csv('Client_segment_limpio.csv', sep=';', index=False)
 
