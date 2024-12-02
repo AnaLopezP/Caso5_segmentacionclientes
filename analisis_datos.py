@@ -12,9 +12,11 @@ df = pd.read_csv('Client_segment_limpio.csv', sep=';', encoding='latin1')
 print(df.head())
 
 
-# 2. Escala los datos
+'''# 2. Escala los datos
 scaler = StandardScaler()
-df_scaled = scaler.fit_transform(df)
+df_scaled = scaler.fit_transform(df)'''
+
+df_scaled = df
 
 # 3. Los convertimos a dataframe
 df_scaled = pd.DataFrame(df_scaled, columns=df.columns)

@@ -10,12 +10,29 @@ import warnings
 from analisis_datos import df_scaled
 warnings.filterwarnings('ignore')
 
+# Identificar variables binarias y continuas
+numerical = df_scaled.select_dtypes(include=[np.number]).columns.tolist()
+binarias = []
+continuas = []
+for col in numerical:
+    unique_values = df_scaled[col].unique()
+    if sorted(unique_values) == [0, 1]:
+        binarias.append(col)
+    else:
+        continuas.append(col)
+        
+print("Variables binarias:", binarias)
+print("Variables continuas:", continuas)
+
+# Cogemos solo las variables continuas
+df_scaled_continuas = df_scaled[continuas]
+
 # 3. Calcula WCSS para diferentes valores de k
 wcss = []
 k_values = range(1, 20)  # Probar con k de 1 a 20 (ponemos que son 8 o 9 los optimos)
 for k in k_values:
     kmeans = KMeans(n_clusters=k, random_state=42)
-    kmeans.fit(df_scaled)
+    kmeans.fit(df_scaled_continuas)
     wcss.append(kmeans.inertia_)
 
 # 4. Graficar la regla del codo
@@ -33,14 +50,14 @@ from sklearn.metrics import silhouette_score, silhouette_samples
 import matplotlib.cm as cm
 
 # Calcular la puntuación de silueta para diferentes valores de k
-for k in range(5, 10):  # Evalúa de 5 a 9 clusters
+for k in range(2, 6):  # Evalúa de 5 a 9 clusters
     kmeans = KMeans(n_clusters=k, random_state=42)
-    labels = kmeans.fit_predict(df_scaled)
-    silhouette_avg = silhouette_score(df_scaled, labels)
+    labels = kmeans.fit_predict(df_scaled_continuas)
+    silhouette_avg = silhouette_score(df_scaled_continuas, labels)
     print(f"Para k = {k}, la puntuación de silueta promedio es: {silhouette_avg}")
 
     # Graficar la silueta para cada cluster
-    sample_silhouette_values = silhouette_samples(df_scaled, labels)
+    sample_silhouette_values = silhouette_samples(df_scaled_continuas, labels)
     y_lower = 10
     for i in range(k):
         ith_cluster_silhouette_values = sample_silhouette_values[labels == i]
@@ -60,34 +77,83 @@ for k in range(5, 10):  # Evalúa de 5 a 9 clusters
     plt.show()
 
 from sklearn.decomposition import PCA
-koptimo = 6
+koptimo = 3
 # Kmeans con el número óptimo de clusters
 kmeans = KMeans(n_clusters=koptimo, random_state=42)
-cluster = kmeans.fit(df_scaled)
+cluster = kmeans.fit_predict(df_scaled_continuas)
+
 
 # Añadir los labels de cluster 
-df_scaled['Cluster'] = cluster
-print(df_scaled.head())
+df_scaled_continuas['Cluster'] = cluster
+print(df_scaled_continuas.head())
+
+# Visualizar el scatter plot con la edad sin centroides
+plt.figure(figsize=(10, 6))
+sns.scatterplot(x = df_scaled_continuas['Generacion'], y = df_scaled_continuas['Campanna_anno'], data = df_scaled_continuas, hue = 'Cluster', s=100, alpha=0.5, palette='viridis')
+plt.title('Segmentación de Clientes')
+plt.xlabel('Generación')
+plt.ylabel('Campaña Año')
+plt.legend()
+plt.grid(True)
+plt.savefig('imagenes/segmentacion_clientes_sincentroides.png')
+plt.show()
 
 #Obtener los índices de las columas Generacion y Campanna_anno
-gen_index = df_scaled.index('Generacion') #ERROR AL COGER EL ÍNDICE
-campanna_index = df_scaled.index('Campanna_anno')
+gen_index = continuas.index('Generacion') #ERROR AL COGER EL ÍNDICE
+campanna_index = continuas.index('Campanna_anno')
 
 centroide = kmeans.cluster_centers_
 
-# Visualizar el scatter plot con la edad
+# Visualizar el scatter plot con la edad con centroides
 plt.figure(figsize=(10, 6))
-sns.scatterplot(x = df_scaled['Generacion'], y = df_scaled['Campanna_anno'], data = df_scaled, hue = 'Cluster', s=100, alpha=0.5, palette='viridis')
+sns.scatterplot(x = df_scaled_continuas['Generacion'], y = df_scaled_continuas['Campanna_anno'], data = df_scaled_continuas, hue = 'Cluster', s=100, alpha=0.5, palette='viridis')
 plt.scatter(centroide[:, gen_index], centroide[:, campanna_index], s=300, c='red', label='Centroides', marker='x', edgecolors='black')
 plt.title('Segmentación de Clientes')
-plt.xlabel('Edad')
-plt.ylabel('Ingresos')
+plt.xlabel('Generacion')
+plt.ylabel('Campaña Año')
 plt.legend()
 plt.grid(True)
 plt.savefig('imagenes/segmentacion_clientes.png')
 plt.show()
 
+koptimo = 2
+# Kmeans con el número óptimo de clusters
+kmeans = KMeans(n_clusters=koptimo, random_state=42)
+cluster = kmeans.fit_predict(df_scaled_continuas)
 
+
+# Añadir los labels de cluster 
+df_scaled_continuas['Cluster'] = cluster
+print(df_scaled_continuas.head())
+
+# Visualizar el scatter plot con la edad sin centroides
+plt.figure(figsize=(10, 6))
+sns.scatterplot(x = df_scaled_continuas['Generacion'], y = df_scaled_continuas['Campanna_anno'], data = df_scaled_continuas, hue = 'Cluster', s=100, alpha=0.5, palette='viridis')
+plt.title('Segmentación de Clientes')
+plt.xlabel('Generación')
+plt.ylabel('Campaña Año')
+plt.legend()
+plt.grid(True)
+plt.savefig('imagenes/segmentacion_clientes_sincentroides.png')
+plt.show()
+
+#Obtener los índices de las columas Generacion y Campanna_anno
+gen_index = continuas.index('Generacion') #ERROR AL COGER EL ÍNDICE
+campanna_index = continuas.index('Campanna_anno')
+
+centroide = kmeans.cluster_centers_
+
+# Visualizar el scatter plot con la edad con centroides
+plt.figure(figsize=(10, 6))
+sns.scatterplot(x = df_scaled_continuas['Generacion'], y = df_scaled_continuas['Campanna_anno'], data = df_scaled_continuas, hue = 'Cluster', s=100, alpha=0.5, palette='viridis')
+plt.scatter(centroide[:, gen_index], centroide[:, campanna_index], s=300, c='red', label='Centroides', marker='x', edgecolors='black')
+plt.title('Segmentación de Clientes')
+plt.xlabel('Generacion')
+plt.ylabel('Campaña Año')
+plt.legend()
+plt.grid(True)
+plt.savefig('imagenes/segmentacion_clientes.png')
+plt.show()
 
 '''# Aplicar PCA
 pca = PCA(n_components=2)  # Cambia el número de componentes si es necesario
