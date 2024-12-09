@@ -12,11 +12,9 @@ df = pd.read_csv('Client_segment_limpio.csv', sep=';', encoding='latin1')
 print(df.head())
 
 
-'''# 2. Escala los datos
+# 2. Escala los datos
 scaler = StandardScaler()
-df_scaled = scaler.fit_transform(df)'''
-
-df_scaled = df
+df_scaled = scaler.fit_transform(df)
 
 # 3. Los convertimos a dataframe
 df_scaled = pd.DataFrame(df_scaled, columns=df.columns)
@@ -115,6 +113,6 @@ plt.show()'''
 if __name__ == '__main__':
     graficar_pca(df_pca)
     graficar_cargar_general(df_pca, cargas_df)
-    graficar_cargas(df, cargas_df, 1)
-    graficar_cargas(df, cargas_df, 2)
+    graficar_cargas(df_scaled, cargas_df, 1)
+    graficar_cargas(df_scaled, cargas_df, 2)
 

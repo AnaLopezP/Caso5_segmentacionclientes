@@ -7,15 +7,18 @@ import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 #ignorar warnings
 import warnings
-from analisis_datos import df_scaled
+from analisis_datos import df
 warnings.filterwarnings('ignore')
 
+
+
+
 # Identificar variables binarias y continuas
-numerical = df_scaled.select_dtypes(include=[np.number]).columns.tolist()
+numerical = df.select_dtypes(include=[np.number]).columns.tolist()
 binarias = []
 continuas = []
 for col in numerical:
-    unique_values = df_scaled[col].unique()
+    unique_values = df[col].unique()
     if sorted(unique_values) == [0, 1]:
         binarias.append(col)
     else:
@@ -25,7 +28,7 @@ print("Variables binarias:", binarias)
 print("Variables continuas:", continuas)
 
 # Cogemos solo las variables continuas
-df_scaled_continuas = df_scaled[continuas]
+df_scaled_continuas = df[continuas]
 
 # 3. Calcula WCSS para diferentes valores de k
 wcss = []
