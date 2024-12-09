@@ -80,7 +80,7 @@ for k in range(2, 6):  # Evalúa de 5 a 9 clusters
     plt.show()
 
 from sklearn.decomposition import PCA
-koptimo = 3
+koptimo = 5
 # Kmeans con el número óptimo de clusters
 kmeans = KMeans(n_clusters=koptimo, random_state=42)
 cluster = kmeans.fit_predict(df_scaled_continuas)
@@ -92,34 +92,34 @@ print(df_scaled_continuas.head())
 
 # Visualizar el scatter plot con la edad sin centroides
 plt.figure(figsize=(10, 6))
-sns.scatterplot(x = df_scaled_continuas['Generacion'], y = df_scaled_continuas['Campanna_anno'], data = df_scaled_continuas, hue = 'Cluster', s=100, alpha=0.5, palette='viridis')
+sns.scatterplot(x = df_scaled_continuas['anno_nacimiento'], y = df_scaled_continuas['Campanna_anno'], data = df_scaled_continuas, hue = 'Cluster', s=100, alpha=0.5, palette='viridis')
 plt.title('Segmentación de Clientes')
-plt.xlabel('Generación')
+plt.xlabel('anno_nacimiento')
 plt.ylabel('Campaña Año')
 plt.legend()
 plt.grid(True)
 plt.savefig(f'imagenes/segmentacion_clientes_sincentroides_koptimo_{koptimo}.png')
 plt.show()
 
-#Obtener los índices de las columas Generacion y Campanna_anno
-gen_index = continuas.index('Generacion') #ERROR AL COGER EL ÍNDICE
+#Obtener los índices de las columas anno_nacimiento y Campanna_anno
+gen_index = continuas.index('anno_nacimiento') #ERROR AL COGER EL ÍNDICE
 campanna_index = continuas.index('Campanna_anno')
 
 centroide = kmeans.cluster_centers_
 
 # Visualizar el scatter plot con la edad con centroides
 plt.figure(figsize=(10, 6))
-sns.scatterplot(x = df_scaled_continuas['Generacion'], y = df_scaled_continuas['Campanna_anno'], data = df_scaled_continuas, hue = 'Cluster', s=100, alpha=0.5, palette='viridis')
+sns.scatterplot(x = df_scaled_continuas['anno_nacimiento'], y = df_scaled_continuas['Campanna_anno'], data = df_scaled_continuas, hue = 'Cluster', s=100, alpha=0.5, palette='viridis')
 plt.scatter(centroide[:, gen_index], centroide[:, campanna_index], s=300, c='red', label='Centroides', marker='x', edgecolors='black')
 plt.title('Segmentación de Clientes')
-plt.xlabel('Generacion')
+plt.xlabel('anno_nacimiento')
 plt.ylabel('Campaña Año')
 plt.legend()
 plt.grid(True)
 plt.savefig(f'imagenes/segmentacion_clientes_koptimo_{koptimo}.png')
 plt.show()
 
-koptimo = 2
+koptimo = 4
 # Kmeans con el número óptimo de clusters
 kmeans = KMeans(n_clusters=koptimo, random_state=42)
 cluster = kmeans.fit_predict(df_scaled_continuas)
@@ -131,27 +131,27 @@ print(df_scaled_continuas.head())
 
 # Visualizar el scatter plot con la edad sin centroides
 plt.figure(figsize=(10, 6))
-sns.scatterplot(x = df_scaled_continuas['Generacion'], y = df_scaled_continuas['Campanna_anno'], data = df_scaled_continuas, hue = 'Cluster', s=100, alpha=0.5, palette='viridis')
+sns.scatterplot(x = df_scaled_continuas['anno_nacimiento'], y = df_scaled_continuas['Campanna_anno'], data = df_scaled_continuas, hue = 'Cluster', s=100, alpha=0.5, palette='viridis')
 plt.title('Segmentación de Clientes')
-plt.xlabel('Generación')
+plt.xlabel('anno_nacimiento')
 plt.ylabel('Campaña Año')
 plt.legend()
 plt.grid(True)
 plt.savefig(f'imagenes/segmentacion_clientes_sincentroides_koptimo_{koptimo}.png')
 plt.show()
 
-#Obtener los índices de las columas Generacion y Campanna_anno
-gen_index = continuas.index('Generacion') #ERROR AL COGER EL ÍNDICE
+#Obtener los índices de las columas anno_nacimiento y Campanna_anno
+gen_index = continuas.index('anno_nacimiento') #ERROR AL COGER EL ÍNDICE
 campanna_index = continuas.index('Campanna_anno')
 
 centroide = kmeans.cluster_centers_
 
 # Visualizar el scatter plot con la edad con centroides
 plt.figure(figsize=(10, 6))
-sns.scatterplot(x = df_scaled_continuas['Generacion'], y = df_scaled_continuas['Campanna_anno'], data = df_scaled_continuas, hue = 'Cluster', s=100, alpha=0.5, palette='viridis')
+sns.scatterplot(x = df_scaled_continuas['anno_nacimiento'], y = df_scaled_continuas['Campanna_anno'], data = df_scaled_continuas, hue = 'Cluster', s=100, alpha=0.5, palette='viridis')
 plt.scatter(centroide[:, gen_index], centroide[:, campanna_index], s=300, c='red', label='Centroides', marker='x', edgecolors='black')
 plt.title('Segmentación de Clientes')
-plt.xlabel('Generacion')
+plt.xlabel('anno_nacimiento')
 plt.ylabel('Campaña Año')
 plt.legend()
 plt.grid(True)

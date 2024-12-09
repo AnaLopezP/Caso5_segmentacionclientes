@@ -46,6 +46,32 @@ Cogemos las altas (positivas y negativas). Estas son las variables influyentes:
 PC1: casado, edad, gastoscore, generacion, ingresos anuales brutos, gasto medio
 PC2: dias cliente, campaña año, abandono
 
+Sin borrar nada y datos escalados
+
+                               pca1      pca2
+ID                         0.012527  0.007733
+Genero                    -0.030284 -0.010157
+Casado                     0.697382  0.034361
+Edad                       0.917553 -0.000201
+Graduado                   0.365726 -0.031016
+Profesion                  0.209722  0.002849
+Experiencia laboral        0.882638  0.002593
+Gastoscore                 0.532882  0.030865
+Family_Size               -0.298049  0.023423
+anno_nacimiento           -0.917778  0.000780
+Generacion                -0.916719  0.001376
+Ingresos anuales brutos    0.706555  0.033764
+Provincia                 -0.011909 -0.002722
+Digital_encuesta          -0.211405 -0.000277
+Gasto_medio_mensual_cuota  0.491693  0.041819
+Abandono                   0.025172 -0.468733
+Dias_cliente               0.000743  0.918271
+Campanna_anno             -0.060587  0.934344
+
+PC1: casado, edad, gastoscore, generacion, ingresos anuales brutos, gasto medio, anno_nacimiento
+PC2: dias cliente, campaña año, abandono
+
+
 ### CONLUSI: 
 El PC1 está muy influido por variables relacionadas con las carácterísticas del cliente como persona, lo que sugiere que está relacionado con el perfil socioeconómico de los clientes. 
 Por otra parte, el PC2 es influido por variables que relacionan la situación del cliente con la empresa. 
