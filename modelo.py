@@ -98,7 +98,7 @@ plt.xlabel('Generación')
 plt.ylabel('Campaña Año')
 plt.legend()
 plt.grid(True)
-plt.savefig('imagenes/segmentacion_clientes_sincentroides.png')
+plt.savefig(f'imagenes/segmentacion_clientes_sincentroides_koptimo_{koptimo}.png')
 plt.show()
 
 #Obtener los índices de las columas Generacion y Campanna_anno
@@ -116,7 +116,7 @@ plt.xlabel('Generacion')
 plt.ylabel('Campaña Año')
 plt.legend()
 plt.grid(True)
-plt.savefig('imagenes/segmentacion_clientes.png')
+plt.savefig(f'imagenes/segmentacion_clientes_koptimo_{koptimo}.png')
 plt.show()
 
 koptimo = 2
@@ -137,7 +137,7 @@ plt.xlabel('Generación')
 plt.ylabel('Campaña Año')
 plt.legend()
 plt.grid(True)
-plt.savefig('imagenes/segmentacion_clientes_sincentroides.png')
+plt.savefig(f'imagenes/segmentacion_clientes_sincentroides_koptimo_{koptimo}.png')
 plt.show()
 
 #Obtener los índices de las columas Generacion y Campanna_anno
@@ -155,7 +155,7 @@ plt.xlabel('Generacion')
 plt.ylabel('Campaña Año')
 plt.legend()
 plt.grid(True)
-plt.savefig('imagenes/segmentacion_clientes.png')
+plt.savefig(f'imagenes/segmentacion_clientes_koptimo_{koptimo}.png')
 plt.show()
 
 '''# Aplicar PCA
