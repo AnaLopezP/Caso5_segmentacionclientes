@@ -50,3 +50,16 @@ PC2: dias cliente, campaña año, abandono
 El PC1 está muy influido por variables relacionadas con las carácterísticas del cliente como persona, lo que sugiere que está relacionado con el perfil socioeconómico de los clientes. 
 Por otra parte, el PC2 es influido por variables que relacionan la situación del cliente con la empresa. 
 
+
+
+## COSAS QUE NOS QUEDAN
+
+### Del modelo:
+interpretar los resultados: analizar y etiquetar los clusters
+validacion (?)
+
+### De marketing:
+• Identificar patrones de comportamiento de los clients
+• Personalizar estrategias de marketing
+• Mejorar la retencio n de clients
+• Optimizar la asignacio n de recursos
