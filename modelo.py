@@ -32,7 +32,7 @@ df_scaled_continuas = df[continuas]
 
 # 3. Calcula WCSS para diferentes valores de k
 wcss = []
-k_values = range(1, 20)  # Probar con k de 1 a 20 (ponemos que son 8 o 9 los optimos)
+k_values = range(1, 15)  # Probar con k de 1 a 20 (ponemos que son 8 o 9 los optimos)
 for k in k_values:
     kmeans = KMeans(n_clusters=k, random_state=42)
     kmeans.fit(df_scaled_continuas)
