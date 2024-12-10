@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import silhouette_score, davies_bouldin_score
+from sklearn.cluster import KMeans
 
 # Configurar estilos para las visualizaciones
 sns.set(style="whitegrid")
@@ -15,7 +17,6 @@ df = pd.read_csv('dataset_con_clusters.csv', sep=';', encoding='latin1', decimal
 # 2. Verificar los nombres de las columnas
 print("\nNombres de las columnas en el dataset:")
 print(df.columns.tolist())
-
 
 
 # 4. Inspeccionar las primeras filas
@@ -70,6 +71,8 @@ for i, var in enumerate(varianza_explicada, start=1):
 
 # 7. Visualizar los Resultados
 
+
+
 # a. Visualización de las Componentes Principales
 plt.figure(figsize=(10,8))
 sns.scatterplot(x='PC1', y='PC2', data=final_df, s=100, alpha=0.7)
@@ -78,6 +81,7 @@ plt.xlabel('Componente Principal 1')
 plt.ylabel('Componente Principal 2')
 plt.title(f'PCA de Thyroid Dataset - {varianza_explicada[0]*100:.2f}% PC1, {varianza_explicada[1]*100:.2f}% PC2')
 plt.grid(True)
+plt.savefig(f'imagenes/componentes_principales.png')
 plt.show()
 
 # b. Dibujar los Vectores (Cargas) de las Variables Originales
@@ -106,11 +110,53 @@ plt.xlabel('Componente Principal 1')
 plt.ylabel('Componente Principal 2')
 plt.title(f'PCA de Thyroid Dataset - {varianza_explicada[0]*100:.2f}% PC1, {varianza_explicada[1]*100:.2f}% PC2')
 plt.grid(True)
+plt.savefig(f'imagenes/vectores.png')
 plt.show()
 
 
-from sklearn.cluster import KMeans
-from sklearn.metrics import davies_bouldin_score
+# Método del Codo
+inercia = []
+rangos_k = range(1, 20)
+
+for k in rangos_k:
+    kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
+    kmeans.fit(final_df)
+    inercia.append(kmeans.inertia_)
+
+# Graficar el Método del Codo
+plt.figure(figsize=(10, 6))
+plt.plot(rangos_k, inercia, marker='o', linestyle='--')
+plt.title('Método del Codo para Determinar K Óptimo')
+plt.xlabel('Número de Clusters (K)')
+plt.ylabel('Inercia')
+plt.xticks(rangos_k)
+plt.grid(True)
+plt.savefig(f'imagenes/met_codo.png')
+plt.show()
+
+# Análisis de Silueta
+silhueta_media = []
+rangos_k_sil = range(2, 20)
+
+for k in rangos_k_sil:
+    kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
+    labels = kmeans.fit_predict(final_df)
+    sil_score = silhouette_score(final_df, labels)
+    silhueta_media.append(sil_score)
+
+# Graficar el Análisis de Silueta
+plt.figure(figsize=(10, 6))
+plt.plot(rangos_k_sil, silhueta_media, marker='o', linestyle='--', color='green')
+plt.title('Análisis de Silueta para Determinar K Óptimo')
+plt.xlabel('Número de Clusters (K)')
+plt.ylabel('Silhouette Media')
+plt.xticks(rangos_k_sil)
+plt.grid(True)
+plt.savefig(f'imagenes/silueta.png')
+plt.show()
+
+
+
 
 # 8. Aplicar K-Means Clustering sobre las Componentes Principales
 # Definir el rango de clusters a explorar
@@ -126,6 +172,7 @@ for k in rangos_k:
     print(f"K={k}: Davies-Bouldin Index={dbi:.4f}")
 
 # 9. Visualizar el Índice Davies-Bouldin
+
 plt.figure(figsize=(10, 6))
 sns.lineplot(x=list(rangos_k), y=dbi_scores, marker='o', color='blue')
 plt.title('Índice de Davies-Bouldin para Diferentes Valores de K')
@@ -133,10 +180,11 @@ plt.xlabel('Número de Clusters (K)')
 plt.ylabel('Davies-Bouldin Index')
 plt.xticks(rangos_k)
 plt.grid(True)
+plt.savefig(f'imagenes/davies_bouldin.png')
 plt.show()
 
 # Selección del número óptimo de clusters (por ejemplo, K=4)
-k_optimo = 4
+k_optimo = 5
 kmeans_optimo = KMeans(n_clusters=k_optimo, random_state=42, n_init=10)
 labels_optimos = kmeans_optimo.fit_predict(final_df)
 
@@ -150,10 +198,9 @@ plt.xlabel('Componente Principal 1')
 plt.ylabel('Componente Principal 2')
 plt.legend(title='Cluster')
 plt.grid(True)
+plt.savefig(f'imagenes/clusters.png')
 plt.show()
 
-# 10. Visualización de los clusters en el espacio PCA
-final_df['Cluster'] = labels_optimos
 
 # Obtener los centroides del K-Means (en el espacio de las dos primeras componentes)
 centroides = kmeans_optimo.cluster_centers_
@@ -176,6 +223,7 @@ plt.xlabel('Componente Principal 1')
 plt.ylabel('Componente Principal 2')
 plt.legend(title='Cluster')
 plt.grid(True)
+plt.savefig(f'imagenes/cluster_centroides.png')
 plt.show()
 
 
