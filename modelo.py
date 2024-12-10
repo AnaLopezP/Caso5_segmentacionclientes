@@ -7,10 +7,10 @@ import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 #ignorar warnings
 import warnings
-# from analisis_datos import df
+# from analisis_datos import df_scaled
 warnings.filterwarnings('ignore')
 
-df = pd.read_csv('Client_segment_limpio.csv', sep=';', encoding='latin1')
+df = pd.read_csv('dataset_con_clusters.csv', sep=';', encoding='latin1')
 
 
 # Identificar variables binarias y continuas

@@ -1,4 +1,4 @@
-import pandas as pd
+'''import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 
@@ -51,7 +51,7 @@ df['Profesion'] = df['Profesion'].map({'Funcionario': 1, 'Ingeniero': 2, 'Servic
 df['Experiencia laboral'] = df['Experiencia laboral'].map({'<10annos': 1, '+20annos': 3, '10-20annos': 2})
 df['Gastoscore'] = df['Gastoscore'].map({'Bajo': 1, 'Medio': 2, 'Alto': 3})
 df['Generacion'] = df['Generacion'].map({'Generacion Z': 4, 'Millennials': 3, 'Generacion X': 2, 'Generacion Silenciosa': 1})
-df['Campanna_anno'] = df['Campanna_anno'].map({np.nan: 0, '3': 3, '1': 1, '0,5': 0.5, '4': 4})
+df['Campanna_anno'] = df['Campanna_anno'].map({np.nan: 2.1, '3': 3, '1': 1, '0,5': 0.5, '4': 4})
 
 
 #Cambiamos la , por . de Digital_encuesta
@@ -89,6 +89,78 @@ print(df.isnull().sum())
 #No hay NaN
 print(len(df))
 #guardamos los datos limpios
-df.to_csv('Client_segment_limpio.csv', sep=';', index=False)
+df.to_csv('Client_segment_limpio.csv', sep=';', index=False)'''
+
+
+import pandas as pd
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.impute import SimpleImputer
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.cluster import KMeans
+
+# Leer el dataset
+file_path = "Client_segment_MODIFICADO.csv"  # Cambia esto por la ubicación de tu archivo
+data = pd.read_csv(file_path, sep=';', decimal=',', encoding = 'latin1')
+
+# Inspeccionar el dataset
+print(data.head())
+
+# Convertir la columna "Experiencia laboral" a valores numéricos
+experiencia_map = {
+    '<10annos': 5,
+    '10-20annos': 15,  # Si existiera esta categoría
+    '+20annos': 25
+}
+data['Experiencia laboral'] = data['Experiencia laboral'].map(experiencia_map)
+
+# Eliminar columnas irrelevantes o no útiles para KMeans
+# Ejemplo: 'ID', columnas que son identificadores únicos o texto sin valor predictivo directo
+data = data.drop(columns=['ID', 'Provincia', 'anno_nacimiento', 'Generacion'])
+
+# Dividir las columnas por tipo
+numerical_features = ['Edad', 'Experiencia laboral', 'Ingresos anuales brutos', 
+                      'Gasto_medio_mensual_cuota', 'Dias_cliente', 'Family_Size']
+categorical_features = ['Genero', 'Casado', 'Graduado', 'Profesion', 'Digital_encuesta', 'Gastoscore']
+
+# Crear transformaciones para variables numéricas y categóricas
+numerical_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='mean')),
+    ('scaler', StandardScaler())
+])
+
+categorical_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='most_frequent')),
+    ('onehot', OneHotEncoder(handle_unknown='ignore'))
+])
+
+# Combinar transformaciones en un ColumnTransformer
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', numerical_transformer, numerical_features),
+        ('cat', categorical_transformer, categorical_features)
+    ])
+
+# Crear el pipeline completo
+pipeline = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('kmeans', KMeans(n_clusters=3, random_state=42))
+])
+
+# Preparar los datos y ajustar el modelo
+X = data.drop(columns=['Abandono', 'Campanna_anno'])  # Excluir etiquetas si no aplican a KMeans
+pipeline.fit(X)
+
+# Obtener las etiquetas de los clústeres
+clusters = pipeline.named_steps['kmeans'].labels_
+data['Cluster'] = clusters
+
+# Inspeccionar los resultados
+print(data[['Cluster']].value_counts())
+print(data.head())
+
+# Guardar el dataset con los clústeres asignados
+data.to_csv("dataset_con_clusters.csv", index=False)
+
 
 
