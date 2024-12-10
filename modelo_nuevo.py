@@ -82,7 +82,7 @@ plt.show()
 k_optimo = 4
 
 # Aplicar K-Means con K óptimo
-kmeans = KMeans(n_clusters=k_optimo, random_state=42, n_init=10)
+kmeans = KMeans(n_clusters=k_optimo, random_state=42)
 clusters = kmeans.fit_predict(df_cleaned)
 
 # Añadir los labels de los clusters al DataFrame limpio
@@ -93,10 +93,10 @@ print(df_cleaned.head())
 
 # Visualización: Scatter Plot con Clusters
 plt.figure(figsize=(10, 8))
-sns.scatterplot(x='Edad', y='Ingresos anuales brutos', hue='Cluster', data=df_cleaned, palette='Set1', s=100, alpha=0.7)
+sns.scatterplot(x='Edad', y='Dias_cliente', hue='Cluster', data=df_cleaned, palette='Set1', s=100, alpha=0.7)
 plt.title(f'K-Means Clustering (K={k_optimo})')
 plt.xlabel('Edad')
-plt.ylabel('Ingresos anuales brutos')
+plt.ylabel('Dias_cliente')
 plt.legend(title='Cluster')
 plt.grid(True)
 plt.show()
@@ -105,11 +105,11 @@ plt.show()
 centroides = kmeans.cluster_centers_
 
 plt.figure(figsize=(10, 8))
-sns.scatterplot(x='Edad', y='Ingresos anuales brutos', hue='Cluster', data=df_cleaned, palette='Set1', s=100, alpha=0.7)
+sns.scatterplot(x='Edad', y='Dias_cliente', hue='Cluster', data=df_cleaned, palette='Set1', s=100, alpha=0.7)
 plt.scatter(centroides[:, 0], centroides[:, 1], s=300, c='yellow', label='Centroides', edgecolor='black', marker='X')
 plt.title(f'K-Means Clustering con Centroides (K={k_optimo})')
 plt.xlabel('Edad')
-plt.ylabel('Ingresos anuales brutos')
+plt.ylabel('Dias_cliente')
 plt.legend(title='Cluster')
 plt.grid(True)
 plt.show()

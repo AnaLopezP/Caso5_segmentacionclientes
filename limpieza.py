@@ -160,7 +160,7 @@ print(data[['Cluster']].value_counts())
 print(data.head())
 
 # Guardar el dataset con los clústeres asignados
-data.to_csv("dataset_con_clusters.csv", index=False)
+data.to_csv("dataset_con_clusters.csv", index=False, sep=';', decimal=',', encoding='latin1')
 
 
 

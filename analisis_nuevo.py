@@ -10,7 +10,8 @@ sns.set(style="whitegrid")
 plt.rcParams['figure.figsize'] = (12, 8)
 
 # 1. Cargar el dataset
-df = pd.read_csv('Client_segment_limpio.csv', sep=';', encoding='latin1')
+df = pd.read_csv('dataset_con_clusters.csv', sep=';', encoding='latin1', decimal=',')
+
 # 2. Verificar los nombres de las columnas
 print("\nNombres de las columnas en el dataset:")
 print(df.columns.tolist())
@@ -25,9 +26,6 @@ print(df.head())
 
 # Seleccionar columnas numéricas excluyendo identificadores
 numerical_cols = df.select_dtypes(include=[np.number]).columns.tolist()
-if 'patient_id' in numerical_cols:
-    numerical_cols.remove('patient_id')
-
 print("\nColumnas numéricas seleccionadas para PCA:", numerical_cols)
 
 # Verificar valores faltantes en columnas numéricas
@@ -53,7 +51,7 @@ print(df_scaled.head())
 pca = PCA(n_components=2)
 
 # Ajustar PCA a los datos estandarizados y transformar los datos
-principal_components = pca.fit_transform(X_scaled)
+principal_components = pca.fit_transform(df_scaled)
 
 # Crear un DataFrame con las componentes principales
 pca_df = pd.DataFrame(data=principal_components, columns=['PC1', 'PC2'])
@@ -78,6 +76,7 @@ sns.scatterplot(x='PC1', y='PC2', data=final_df, s=100, alpha=0.7)
 plt.title('PCA de Thyroid Dataset (Sin Clase)')
 plt.xlabel('Componente Principal 1')
 plt.ylabel('Componente Principal 2')
+plt.title(f'PCA de Thyroid Dataset - {varianza_explicada[0]*100:.2f}% PC1, {varianza_explicada[1]*100:.2f}% PC2')
 plt.grid(True)
 plt.show()
 
@@ -105,6 +104,77 @@ for var in numerical_cols:
 plt.title('PCA con Vectores de Variables Originales')
 plt.xlabel('Componente Principal 1')
 plt.ylabel('Componente Principal 2')
+plt.title(f'PCA de Thyroid Dataset - {varianza_explicada[0]*100:.2f}% PC1, {varianza_explicada[1]*100:.2f}% PC2')
+plt.grid(True)
+plt.show()
+
+
+from sklearn.cluster import KMeans
+from sklearn.metrics import davies_bouldin_score
+
+# 8. Aplicar K-Means Clustering sobre las Componentes Principales
+# Definir el rango de clusters a explorar
+rangos_k = range(2, 20)
+dbi_scores = []
+
+# Calcular el Índice Davies-Bouldin para cada valor de K
+for k in rangos_k:
+    kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
+    labels = kmeans.fit_predict(final_df)
+    dbi = davies_bouldin_score(final_df, labels)
+    dbi_scores.append(dbi)
+    print(f"K={k}: Davies-Bouldin Index={dbi:.4f}")
+
+# 9. Visualizar el Índice Davies-Bouldin
+plt.figure(figsize=(10, 6))
+sns.lineplot(x=list(rangos_k), y=dbi_scores, marker='o', color='blue')
+plt.title('Índice de Davies-Bouldin para Diferentes Valores de K')
+plt.xlabel('Número de Clusters (K)')
+plt.ylabel('Davies-Bouldin Index')
+plt.xticks(rangos_k)
+plt.grid(True)
+plt.show()
+
+# Selección del número óptimo de clusters (por ejemplo, K=4)
+k_optimo = 4
+kmeans_optimo = KMeans(n_clusters=k_optimo, random_state=42, n_init=10)
+labels_optimos = kmeans_optimo.fit_predict(final_df)
+
+# 10. Visualización de los clusters en el espacio PCA
+final_df['Cluster'] = labels_optimos
+
+plt.figure(figsize=(10, 8))
+sns.scatterplot(x='PC1', y='PC2', hue='Cluster', data=final_df, palette='Set1', s=100, alpha=0.7)
+plt.title(f'K-Means Clustering (K={k_optimo}) en el Espacio PCA')
+plt.xlabel('Componente Principal 1')
+plt.ylabel('Componente Principal 2')
+plt.legend(title='Cluster')
+plt.grid(True)
+plt.show()
+
+# 10. Visualización de los clusters en el espacio PCA
+final_df['Cluster'] = labels_optimos
+
+# Obtener los centroides del K-Means (en el espacio de las dos primeras componentes)
+centroides = kmeans_optimo.cluster_centers_
+
+# Crear el gráfico con los puntos de los clusters
+plt.figure(figsize=(10, 8))
+sns.scatterplot(x='PC1', y='PC2', hue='Cluster', data=final_df, palette='Set1', s=100, alpha=0.7)
+
+# Añadir los centroides al gráfico
+plt.scatter(centroides[:, 0], centroides[:, 1], s=200, c='red', marker='X', label='Centroides', edgecolor='black')
+
+# Etiquetar los centroides con su número de cluster
+for i, centroide in enumerate(centroides):
+    plt.text(centroide[0] + 0.02, centroide[1] + 0.02, f'Cluster {i}', 
+             color='red', fontweight='bold')
+
+# Ajustar el título y etiquetas
+plt.title(f'K-Means Clustering (K={k_optimo}) en el Espacio PCA')
+plt.xlabel('Componente Principal 1')
+plt.ylabel('Componente Principal 2')
+plt.legend(title='Cluster')
 plt.grid(True)
 plt.show()
 
