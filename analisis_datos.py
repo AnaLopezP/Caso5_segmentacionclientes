@@ -116,3 +116,21 @@ if __name__ == '__main__':
     graficar_cargas(df_scaled, cargas_df, 1)
     graficar_cargas(df_scaled, cargas_df, 2)
 
+
+import seaborn as sns
+
+# Cargar los datos
+df = pd.read_csv('Client_segment_limpio.csv', sep=';', encoding='latin1')
+
+# Calcular la matriz de correlación
+correlation_matrix = df.corr()
+
+# Mostrar la matriz de correlación
+print("Matriz de correlación:")
+print(correlation_matrix)
+
+# Crear un mapa de calor para visualizar la matriz
+plt.figure(figsize=(12, 8))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f', linewidths=0.5)
+plt.title('Mapa de calor de la matriz de correlación')
+plt.show()
