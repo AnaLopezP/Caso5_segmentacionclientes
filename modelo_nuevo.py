@@ -142,3 +142,6 @@ plt.xticks(rangos_k)
 plt.grid(True)
 plt.show()
 
+'''# Añadir los clusters al dataset original
+df['Cluster'] = df_cleaned['Cluster']
+'''
