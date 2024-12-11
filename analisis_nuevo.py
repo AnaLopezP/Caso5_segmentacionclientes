@@ -226,7 +226,8 @@ plt.grid(True)
 plt.savefig(f'imagenes/cluster_centroides.png')
 plt.show()
 
-
+#guaramos el dataset que usamos
+final_df.to_csv('dataset_final.csv', sep=';', index=False, encoding='latin1')
 
 '''import numpy as np
 import pandas as pd
